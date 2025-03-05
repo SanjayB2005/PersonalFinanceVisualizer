@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-mongoose.connect('mongodb+srv://Sanjay:Sanjay2020@mernStack.mongodb.net/FinanceVisualizer?retryWrites=true&w=majority')
+mongoose.connect("mongodb+srv://Sanjay:Sanjay2020@mernstack.bad8g.mongodb.net/" || 'mongodb://localhost:27017/FinanceVisualizer')
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
   console.error('Failed to connect to MongoDB', err);
