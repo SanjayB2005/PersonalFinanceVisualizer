@@ -40,7 +40,7 @@ function SavingsSection({ transactions = [], onAddTransaction }) {
     const fetchSavingsPlans = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("http://localhost:8000/api/savings-plans");
+        const response = await axios.get("https://personalfinancevisualizer.onrender.com/api/savings-plans");
         setSavingsPlans(response.data);
         setError(null);
       } catch (err) {
@@ -190,7 +190,7 @@ function SavingsSection({ transactions = [], onAddTransaction }) {
       };
       
       // Send request with properly formatted data
-      const response = await fetch("http://localhost:8000/api/savings-plans", {
+      const response = await fetch("https://personalfinancevisualizer.onrender.com/api/savings-plans", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -265,7 +265,7 @@ function SavingsSection({ transactions = [], onAddTransaction }) {
       };
       
       // Send request to update
-      const response = await fetch(`http://localhost:8000/api/savings-plans/${editingPlan._id}`, {
+      const response = await fetch(`https://personalfinancevisualizer.onrender.com/api/savings-plans/${editingPlan._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -299,7 +299,7 @@ function SavingsSection({ transactions = [], onAddTransaction }) {
     
     try {
       // Send delete request
-      const response = await fetch(`http://localhost:8000/api/savings-plans/${confirmDelete}`, {
+      const response = await fetch(`https://personalfinancevisualizer.onrender.com/api/savings-plans/${confirmDelete}`, {
         method: 'DELETE'
       });
 
@@ -345,10 +345,10 @@ function SavingsSection({ transactions = [], onAddTransaction }) {
         currentAmount: plan.currentAmount + amount
       };
 
-      await axios.put(`http://localhost:8000/api/savings-plans/${plan._id}`, updatedPlan);
+      await axios.put(`https://personalfinancevisualizer.onrender.com/api/savings-plans/${plan._id}`, updatedPlan);
 
       // Add a transaction record
-      await axios.post("http://localhost:8000/api/transactions", {
+      await axios.post("https://personalfinancevisualizer.onrender.com/api/transactions", {
         description: `Savings: ${plan.name}`,
         amount,
         type: "expense", // It's an expense from your main balance

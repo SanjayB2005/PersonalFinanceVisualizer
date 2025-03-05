@@ -30,8 +30,8 @@ function Header({ onSearchResultSelect }) {
       
       // Fetch transactions and savings plans
       const [transactionsRes, savingsRes] = await Promise.all([
-        axios.get("http://localhost:8000/api/transactions"),
-        axios.get("http://localhost:8000/api/savings-plans")
+        axios.get("https://personalfinancevisualizer.onrender.com/api/transactions"),
+        axios.get("https://personalfinancevisualizer.onrender.com/api/savings-plans")
       ]);
 
       // Filter transactions that match the query

@@ -25,7 +25,7 @@ function FinanceDashboard() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/transactions");
+      const response = await axios.get("https://personalfinancevisualizer.onrender.com/api/transactions");
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);

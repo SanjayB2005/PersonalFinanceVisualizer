@@ -31,7 +31,7 @@ function BalanceCard({ balance = 0, onBalanceUpdate }) {
     try {
       // Create a balance adjustment transaction directly
       // This is simpler than using a separate API endpoint
-      await axios.post("http://localhost:8000/api/transactions", {
+      await axios.post("https://personalfinancevisualizer.onrender.com/api/transactions", {
         description: "Balance Adjustment",
         amount: Math.abs(balanceValue - balance),
         type: balanceValue > balance ? "income" : "expense",

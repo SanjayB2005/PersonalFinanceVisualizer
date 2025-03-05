@@ -17,7 +17,7 @@ function SpendingCard({ transactions = [], spent = 0 }) {
   useEffect(() => {
     const fetchSpendingLimit = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/spending-limits/${period}`);
+        const response = await axios.get(`https://personalfinancevisualizer.onrender.com/api/spending-limits/${period}`);
         if (response.data) {
           setSpendingLimit(response.data);
         }
@@ -94,7 +94,7 @@ function SpendingCard({ transactions = [], spent = 0 }) {
 
     try {
       // Update or create spending limit
-      const response = await axios.post("http://localhost:8000/api/spending-limits", {
+      const response = await axios.post("https://personalfinancevisualizer.onrender.com/api/spending-limits", {
         category: "Total", // This represents the total spending limit
         limit: limitValue,
         period: period

@@ -23,7 +23,7 @@ function TransactionsHistory({ highlightedTransactionId }) {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8000/api/transactions");
+      const response = await axios.get("https://personalfinancevisualizer.onrender.com/api/transactions");
       setTransactions(response.data);
       
       // Apply any existing filters
@@ -155,7 +155,7 @@ function TransactionsHistory({ highlightedTransactionId }) {
       // Delete each selected transaction
       await Promise.all(
         selectedTransactions.map(id => 
-          axios.delete(`http://localhost:8000/api/transactions/${id}`)
+          axios.delete(`https://personalfinancevisualizer.onrender.com/api/transactions/${id}`)
         )
       );
       

@@ -35,7 +35,7 @@ const AddTransactionModal = ({ onClose, onTransactionAdded }) => {
       };
 
       // Send data to the backend
-      const response = await axios.post('http://localhost:8000/api/transactions', transactionData);
+      const response = await axios.post('https://personalfinancevisualizer.onrender.com/api/transactions', transactionData);
 
       // Call the callback to notify parent component that a transaction was added
       if (onTransactionAdded) {
