@@ -2,6 +2,8 @@
 
 A comprehensive financial management application built with the MERN stack (MongoDB, Express.js, React, Node.js). This application enables users to track expenses, manage savings goals, and visualize financial data through an intuitive dashboard interface.
 
+![Personal Finance Visualizer Preview](client/src/assets/PersonalFinanceVisualizer.png)
+
 ## Features
 
 - **Transaction Tracking**: Add, edit, and view expenses and income transactions
