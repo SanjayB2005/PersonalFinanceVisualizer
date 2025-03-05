@@ -25,7 +25,7 @@ function DashboardGrid({ transactions = [], onBalanceUpdate }) {
   }, [transactions]);
   
   return (
-    <div className="grid grid-cols-3 gap-6 mb-6 max-md:grid-cols-1">
+    <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
       <BalanceCard 
         balance={financialData.balance} 
         onBalanceUpdate={onBalanceUpdate}
@@ -37,6 +37,7 @@ function DashboardGrid({ transactions = [], onBalanceUpdate }) {
       <SecurityCard 
         income={financialData.totalIncome}
         transactions={transactions}
+        className="sm:col-span-2 lg:col-span-1"
       />
     </div>
   );

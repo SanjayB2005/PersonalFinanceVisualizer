@@ -27,6 +27,16 @@ function SpendingCard({ transactions = [], spent = 0 }) {
     };
 
     fetchSpendingLimit();
+
+    // Close dropdown when clicking outside
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.period-dropdown-button') && !e.target.closest('.period-dropdown-menu')) {
+        setPeriodDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [period]);
 
   // Calculate relevant spent amount based on the period
@@ -75,6 +85,7 @@ function SpendingCard({ transactions = [], spent = 0 }) {
   const handleEditClick = () => {
     setNewLimit(spendingLimit.limit.toString());
     setIsEditing(true);
+    setPeriodDropdownOpen(false);
   };
 
   const handleCancel = () => {
@@ -94,7 +105,7 @@ function SpendingCard({ transactions = [], spent = 0 }) {
 
     try {
       // Update or create spending limit
-      const response = await axios.post("https://personalfinancevisualizer.onrender.com/api/spending-limits", {
+      await axios.post("https://personalfinancevisualizer.onrender.com/api/spending-limits", {
         category: "Total", // This represents the total spending limit
         limit: limitValue,
         period: period
@@ -141,8 +152,8 @@ function SpendingCard({ transactions = [], spent = 0 }) {
   const amountRemaining = Math.max(0, spendingLimit.limit - periodSpending);
 
   return (
-    <article className="p-6 rounded-2xl bg-slate-800 relative">
-      <header className="flex justify-between items-center mb-4">
+    <article className="p-4 md:p-6 rounded-2xl bg-slate-800 relative">
+      <header className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <h3 className="text-sm text-white flex items-center">
           Spending limit
           <button 
@@ -156,14 +167,14 @@ function SpendingCard({ transactions = [], spent = 0 }) {
         <div className="text-white relative">
           <button 
             onClick={togglePeriodDropdown}
-            className="flex items-center gap-1 cursor-pointer hover:text-indigo-300 transition-colors"
+            className="flex items-center gap-1 cursor-pointer hover:text-indigo-300 transition-colors period-dropdown-button"
           >
             <span className="capitalize">{getPeriodLabel()}</span>
-            <i className="ti ti-chevron-down" />
+            <i className={`ti ti-chevron-${periodDropdownOpen ? 'up' : 'down'}`} />
           </button>
           
           {periodDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-36 bg-slate-700 rounded-lg shadow-lg z-10">
+            <div className="absolute right-0 mt-2 w-36 bg-slate-700 rounded-lg shadow-lg z-10 period-dropdown-menu">
               <button 
                 onClick={() => handlePeriodChange("daily")}
                 className={`block w-full text-left px-4 py-2 text-sm hover:bg-slate-600 rounded-t-lg ${period === "daily" ? "text-indigo-300" : "text-white"}`}
@@ -189,12 +200,14 @@ function SpendingCard({ transactions = [], spent = 0 }) {
       
       {!isEditing ? (
         <>
-          <p className="mb-2 text-2xl font-semibold text-white">
-            <span>₹{periodSpending.toFixed(2)}</span>
-            <span className="ml-2 text-sm text-slate-500">
+          <div className="mb-2">
+            <p className="text-xl md:text-2xl font-semibold text-white">
+              <span>₹{periodSpending.toFixed(2)}</span>
+            </p>
+            <p className="text-sm text-slate-500">
               used from ₹{spendingLimit.limit.toFixed(2)}
-            </span>
-          </p>
+            </p>
+          </div>
           
           {/* Progress bar */}
           <div className="w-full h-2 bg-slate-700 rounded-full mb-2">
@@ -239,18 +252,18 @@ function SpendingCard({ transactions = [], spent = 0 }) {
             <div className="text-xs text-slate-400 mt-1">
               This limit applies to your {period === "daily" ? "daily" : period === "weekly" ? "weekly" : "monthly"} spending only
             </div>
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-3">
               <button
                 onClick={handleSave}
                 disabled={isSubmitting}
-                className="flex-1 px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition-colors"
+                className="flex-1 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition-colors"
               >
                 {isSubmitting ? 'Saving...' : 'Save'}
               </button>
               <button
                 onClick={handleCancel}
                 disabled={isSubmitting}
-                className="flex-1 px-3 py-1 border border-slate-600 text-white hover:bg-slate-700 rounded-md text-sm transition-colors"
+                className="flex-1 px-3 py-2 border border-slate-600 text-white hover:bg-slate-700 rounded-md text-sm transition-colors"
               >
                 Cancel
               </button>

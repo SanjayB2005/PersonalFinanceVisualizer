@@ -89,31 +89,30 @@ function FinanceDashboard() {
         rel="stylesheet"
       />
       
-
-      <main className="p-5 min-h-screen bg-slate-900">
+      <main className="p-3 sm:p-5 min-h-screen bg-slate-900">
         <Header onSearchResultSelect={handleSearchResultSelect} />
 
-        <section className="p-8 rounded-3xl bg-opacity-10 bg-slate-900">
-          <h1 className="mb-6 text-2xl font-semibold text-white">
+        <section className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-opacity-10 bg-slate-900">
+          <h1 className="mb-4 sm:mb-6 text-xl sm:text-2xl font-semibold text-white">
             Welcome back, Sanjay !
           </h1>
 
-          <nav className="flex gap-8 mb-8">
+          <div className="flex flex-wrap gap-4 mb-6">
             <button 
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors text-sm sm:text-base"
               onClick={openModal}
             >
               <i className="ti ti-plus"></i>
               Add Transaction
             </button>
-          </nav>
+          </div>
 
           <DashboardGrid 
             transactions={transactions} 
             onBalanceUpdate={handleBalanceUpdate} 
           />
 
-          <div className="grid gap-6 grid-cols-[1fr_1.5fr] max-md:grid-cols-[1fr] max-sm:grid-cols-[1fr]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.5fr]">
             <div ref={savingsSectionRef}>
               <SavingsSection 
                 transactions={transactions} 

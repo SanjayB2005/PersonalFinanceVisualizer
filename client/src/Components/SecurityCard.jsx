@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 function SecurityCard({ income = 0, transactions = [] }) {
   const [timeframe, setTimeframe] = useState("weekly"); // "daily", "weekly", "monthly"
@@ -90,6 +90,18 @@ function SecurityCard({ income = 0, transactions = [] }) {
       savingsPercentage
     };
   }, [transactions, timeframe, income]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.timeframe-dropdown-toggle') && !e.target.closest('.timeframe-dropdown-menu')) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   
   // Format currency
   const formatCurrency = (amount) => {
@@ -132,8 +144,8 @@ function SecurityCard({ income = 0, transactions = [] }) {
   };
 
   return (
-    <article className="p-6 rounded-2xl bg-slate-800 relative">
-      <header className="flex justify-between items-center mb-4">
+    <article className="p-4 md:p-6 rounded-2xl bg-slate-800 relative">
+      <header className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <h3 className="text-sm text-white flex items-center">
           <span className="mr-2">Income Security</span>
           <i className="ti ti-shield-check text-indigo-500"></i>
@@ -141,14 +153,14 @@ function SecurityCard({ income = 0, transactions = [] }) {
         <div className="relative">
           <button 
             onClick={toggleDropdown}
-            className="flex items-center gap-1 text-white hover:text-indigo-300 transition-colors"
+            className="flex items-center gap-1 text-white hover:text-indigo-300 transition-colors timeframe-dropdown-toggle"
           >
             <span>{getTimeframeLabel()}</span>
-            <i className="ti ti-chevron-down"></i>
+            <i className={`ti ti-chevron-${showDropdown ? 'up' : 'down'}`}></i>
           </button>
           
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-36 bg-slate-700 rounded-lg shadow-lg z-10">
+            <div className="absolute right-0 mt-2 w-36 bg-slate-700 rounded-lg shadow-lg z-10 timeframe-dropdown-menu">
               <button 
                 onClick={() => changeTimeframe("daily")}
                 className={`block w-full text-left px-4 py-2 text-sm hover:bg-slate-600 rounded-t-lg ${timeframe === "daily" ? "text-indigo-300" : "text-white"}`}
@@ -177,19 +189,19 @@ function SecurityCard({ income = 0, transactions = [] }) {
         {periodData.percentageChange.toFixed(1)}% from {getComparisonLabel()}
       </div>
       
-      <p className="mb-4 text-2xl font-semibold text-white">
+      <p className="mb-4 text-xl md:text-2xl font-semibold text-white">
         {formatCurrency(periodData.currentAmount)}
       </p>
       
       <div className="space-y-3">
-        <div className="flex justify-between items-center text-sm">
+        <div className="flex justify-between items-center text-sm flex-wrap gap-1">
           <span className="text-slate-400">Income Rate</span>
           <span className="text-white font-medium">
             {formatCurrency(periodData.currentAmount)} / {timeframe === "daily" ? "day" : timeframe === "weekly" ? "week" : "month"}
           </span>
         </div>
         
-        <div className="flex justify-between items-center text-sm">
+        <div className="flex justify-between items-center text-sm flex-wrap gap-1">
           <span className="text-slate-400">Savings</span>
           <div className="flex items-center">
             <span className={`text-sm font-medium ${periodData.savingsAmount >= 0 ? "text-green-500" : "text-red-500"}`}>
