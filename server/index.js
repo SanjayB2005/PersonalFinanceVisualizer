@@ -5,14 +5,17 @@ const Transaction = require('./models/Transaction');
 const SavingsPlan = require('./models/SavingsPlan');
 console.log('SavingsPlan model loaded:', !!SavingsPlan); // Should print "SavingsPlan model loaded: true"
 const SpendingLimit = require('./models/SpendingLimit');
-
+const path = require('path');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-mongoose.connect("mongodb+srv://Sanjay:Sanjay2020@mernstack.bad8g.mongodb.net/" || 'mongodb://localhost:27017/FinanceVisualizer')
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mernstack';
+
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI || 'mongodb://localhost:27017/FinanceVisualizer')
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
   console.error('Failed to connect to MongoDB', err);
@@ -79,8 +82,6 @@ app.get('/api/savings-plans', async (req, res) => {
 });
 
 // Add new savings plan
-// Add new savings plan
-// Update the post route for savings plans
 app.post('/api/savings-plans', async (req, res) => {
   try {
     // Debug request body
@@ -276,8 +277,6 @@ app.delete('/api/spending-limits/:id', async (req, res) => {
   }
 });
 
-// Add this route to your Express app
-
 // Adjust balance (creates an adjustment transaction)
 app.post('/api/balance/adjust', async (req, res) => {
   try {
@@ -327,5 +326,83 @@ app.post('/api/balance/adjust', async (req, res) => {
   }
 });
 
-const port = 8000;
-app.listen(port, () => console.log(`Server running on port ${port}`));
+// Serve static files from the React app for production
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from React frontend
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+  
+  // Handle any requests that don't match the ones above
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  });
+} else {
+  // Simple route for development
+ app.get('/', (req, res) => {
+    const routes = [
+      '- GET    /api/transactions',
+      '- POST   /api/transactions',
+      '- PUT    /api/transactions/:id',
+      '- DELETE /api/transactions/:id',
+      '- GET    /api/savings-plans',
+      '- POST   /api/savings-plans',
+      '- PUT    /api/savings-plans/:id',
+      '- DELETE /api/savings-plans/:id',
+      '- GET    /api/spending-limits',
+      '- GET    /api/spending-limits/:period',
+      '- POST   /api/spending-limits',
+      '- PUT    /api/spending-limits/:id',
+      '- DELETE /api/spending-limits/:id',
+      '- POST   /api/balance/adjust'
+    ];
+
+    const htmlResponse = `
+      <html>
+        <head>
+          <title>Personal Finance Visualizer API</title>
+          <style>
+            body { 
+              font-family: monospace; 
+              padding: 20px; 
+              line-height: 1.6;
+            }
+            h1 { color: #333; }
+            pre { 
+              background: #f4f4f4; 
+              padding: 15px; 
+              border-radius: 5px;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Personal Finance Visualizer API</h1>
+          <p>Server is running on port ${port}</p>
+          <h2>Available Routes:</h2>
+          <pre>${routes.join('\n')}</pre>
+        </body>
+      </html>
+    `;
+
+    res.send(htmlResponse);
+  });
+}
+
+// Use PORT environment variable for Render.com deployment
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`Available routes:`);
+  console.log(`- GET    /api/transactions`);
+  console.log(`- POST   /api/transactions`);
+  console.log(`- PUT    /api/transactions/:id`);
+  console.log(`- DELETE /api/transactions/:id`);
+  console.log(`- GET    /api/savings-plans`);
+  console.log(`- POST   /api/savings-plans`);
+  console.log(`- PUT    /api/savings-plans/:id`);
+  console.log(`- DELETE /api/savings-plans/:id`);
+  console.log(`- GET    /api/spending-limits`);
+  console.log(`- GET    /api/spending-limits/:period`);
+  console.log(`- POST   /api/spending-limits`);
+  console.log(`- PUT    /api/spending-limits/:id`);
+  console.log(`- DELETE /api/spending-limits/:id`);
+  console.log(`- POST   /api/balance/adjust`);
+});
