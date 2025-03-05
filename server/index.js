@@ -328,13 +328,41 @@ app.post('/api/balance/adjust', async (req, res) => {
 
 // Serve static files from the React app for production
 if (process.env.NODE_ENV === 'production') {
-  // Serve static files from React frontend
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+  // Check multiple possible build paths
+  const buildPaths = [
+    path.join(__dirname, '../client/dist'),
+    path.join(__dirname, '../client/build'),
+    path.resolve(__dirname, '../../client/dist'),
+    path.resolve(__dirname, '../../client/build')
+  ];
   
-  // Handle any requests that don't match the ones above
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-  });
+  let foundBuildPath = null;
+  for (const buildPath of buildPaths) {
+    try {
+      if (require('fs').existsSync(path.join(buildPath, 'index.html'))) {
+        foundBuildPath = buildPath;
+        console.log(`Found React build at: ${buildPath}`);
+        break;
+      }
+    } catch (err) {
+      console.log(`Build path ${buildPath} not found`);
+    }
+  }
+  
+  if (foundBuildPath) {
+    // Serve static files from React frontend
+    app.use(express.static(foundBuildPath));
+    
+    // Handle any requests that don't match the ones above
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(foundBuildPath, 'index.html'));
+    });
+  } else {
+    console.error('Could not find React build directory');
+    app.get('*', (req, res) => {
+      res.status(500).send('Server configuration error: React build not found');
+    });
+  }
 } else {
   // Simple route for development
  app.get('/', (req, res) => {
