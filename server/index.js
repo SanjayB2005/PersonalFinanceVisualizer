@@ -327,8 +327,8 @@ app.post('/api/balance/adjust', async (req, res) => {
 });
 
 
-// Simple route for development
-app.get('/', (req, res) => {
+
+app.get('/', (req, res) => {    // health route
   const routes = [
     '- GET    /api/transactions',
     '- POST   /api/transactions',
