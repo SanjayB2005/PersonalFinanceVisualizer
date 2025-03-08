@@ -32,7 +32,8 @@ function FinanceDashboard() {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {  //  "refreshKey" technique that triggers component re-renders and data
+                      // refetching when transactions are modified
     fetchTransactions();
   }, [refreshKey]);
 
